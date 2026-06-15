@@ -1,3 +1,3 @@
-module example.com/day5
+module github.com/omnlgy/bootcampgo
 
-go 1.26.3
+go 1.26.4
