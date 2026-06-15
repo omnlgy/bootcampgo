@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 
+	"github.com/omnlgy/bootcampgo/internal/logger"
 	"github.com/omnlgy/bootcampgo/internal/model"
 )
 
@@ -26,5 +27,6 @@ func (c *CartService) AddItem(item model.Product, quantity int) error {
 	}
 
 	c.Itmes[item.SKU] += quantity
+	logger.LogTransaction(item.SKU, item.Price*float64(quantity))
 	return nil
 }

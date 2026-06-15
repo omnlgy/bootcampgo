@@ -3,14 +3,27 @@ package main
 import (
 	"fmt"
 
+	"github.com/omnlgy/bootcampgo/internal/auth"
+	"github.com/omnlgy/bootcampgo/internal/logger"
 	"github.com/omnlgy/bootcampgo/internal/model"
 	"github.com/omnlgy/bootcampgo/internal/service"
 )
+
+func init() {
+	logger.Init()
+}
 
 func main() {
 	fmt.Println("==================================================")
 	fmt.Println(" APLIKASI KASIR GO-SHOP (MODULAR LAYOUT) ")
 	fmt.Println("==================================================")
+
+	auth := auth.NewMerchantAuth("merchant-token")
+
+	if !auth.ValidateToken("merchant-token") {
+		fmt.Println("Token tidak valid")
+		return
+	}
 
 	laptop := model.Product{
 		SKU:   "SKU-LAP-01",
