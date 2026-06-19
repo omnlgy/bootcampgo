@@ -7,7 +7,7 @@ import (
 
 func main() {
 	mux := http.NewServeMux()
-
+	fmt.Println("Server is starting...")
 	mux.HandleFunc("GET /hello", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello, World!"))
 	})
