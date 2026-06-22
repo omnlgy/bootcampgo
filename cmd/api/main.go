@@ -1,19 +1,19 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	mux := http.NewServeMux()
-	fmt.Println("Server is starting...")
-	mux.HandleFunc("GET /hello", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello, World!"))
+	router := gin.Default()
+
+	router.GET("/hello", func(ctx *gin.Context) {
+		ctx.JSON(200, gin.H{
+			"message": "Hello, World!",
+		})
 	})
 
-	fmt.Println("Server is running on port 8080")
-	if err := http.ListenAndServe(":8080", mux); err != nil {
-		fmt.Println(err)
+	if err := router.Run(":8080"); err != nil {
+		panic(err)
 	}
 }
