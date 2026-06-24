@@ -1,21 +1,13 @@
 package router
 
 import (
-	"time"
-
-	"example.com/internal/utils"
+	"example.com/internal/controller"
 	"github.com/gin-gonic/gin"
 )
 
-func RegisteredRoute(router *gin.Engine) {
-	api := router.Group("/api")
-	api.Use(utils.ApiAuthMiddleware())
-	api.Use(utils.ApiLimiterMiddleware(utils.ApiLimiterConfig{
-		MaxRequests: 10,
-		Window:      1 * time.Minute,
-	}))
+func OrderRoutes(server *gin.Engine, controller *controller.OrderController) {
+	api := server.Group("/api")
 
-	api.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{"message": "Hello World"})
-	})
+	api.POST("/orders", controller.CreateOrder)
+
 }

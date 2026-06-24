@@ -1,16 +1,11 @@
 package models
 
-// User maps to the "users" table.
-type User struct {
-	Base
-	Name     string `gorm:"not null" json:"name"`
-	Email    string `gorm:"not null;uniqueIndex" json:"email"`
-	Password string `gorm:"not null" json:"-"`
-	Phone    string `gorm:"type:varchar" json:"phone,omitempty"`
-	Role     string `gorm:"not null;default:customer" json:"role"`
+import "time"
 
-	// Relationships
-	Bookings []Booking `gorm:"foreignKey:UserID" json:"bookings,omitempty"`
+type User struct {
+	ID        uint      `gorm:"primaryKey" json:"id"`
+	Email     string    `gorm:"type:varchar(100);uniqueIndex;not null" json:"email"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 func (User) TableName() string {

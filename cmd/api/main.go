@@ -3,7 +3,11 @@ package main
 import (
 	"log"
 
+	"example.com/cmd/seed"
+	"example.com/internal/controller"
+	"example.com/internal/repository"
 	"example.com/internal/router"
+	"example.com/internal/service"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -11,25 +15,24 @@ import (
 
 func main() {
 	dsn := "host=localhost user=admin password=admin123 dbname=day6 port=5432 sslmode=disable"
-	_, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)
 	}
 
-	// Auto-migrate models
-	// err = db.AutoMigrate(
-	// 	&models.User{},
-	// 	&models.Concert{},
-	// 	&models.Booking{},
-	// 	&models.TicketCategory{},
-	// 	&models.TicketDetail{},
-	// )
-	// if err != nil {
-	// 	log.Fatalf("failed to migrate: %v", err)
-	// }
+	seed.Init(db)
+	transactor := repository.NewTransactor(db)
+
+	orderRepo := repository.NewOrderRepository(db)
+	productRepo := repository.NewProductRepository(db)
+	userRepo := repository.NewUserRepository(db)
+	orderItemRepo := repository.NewOrderItemRepository(db)
+
+	orderSvc := service.NewOrderService(orderRepo, productRepo, userRepo, orderItemRepo, transactor)
+	orderCtrl := controller.NewOrderController(orderSvc)
 
 	server := gin.Default()
 
-	router.RegisteredRoute(server)
+	router.OrderRoutes(server, orderCtrl)
 	server.Run(":8080")
 }
