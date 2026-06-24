@@ -8,6 +8,7 @@ import (
 func OrderRoutes(server *gin.Engine, controller *controller.OrderController) {
 	api := server.Group("/api")
 
+	api.GET("/orders", controller.GetOrders)
 	api.POST("/orders", controller.CreateOrder)
 
 }
