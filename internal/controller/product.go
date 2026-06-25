@@ -3,6 +3,7 @@ package controller
 import (
 	"time"
 
+	"example.com/internal/dto"
 	"example.com/internal/models"
 	"example.com/internal/service"
 	"github.com/gin-gonic/gin"
@@ -18,16 +19,8 @@ func NewProductController(productService *service.ProductService) *ProductContro
 	}
 }
 
-type CreateProductInput struct {
-	SKU       string  `json:"sku" binding:"required"`
-	Name      string  `json:"name" binding:"required"`
-	Price     float64 `json:"price" binding:"required,gt=0"`
-	Stock     int     `json:"stock" binding:"gte=0"`
-	ExpiredAt string  `json:"expired_at" binding:"required,expire_range"`
-}
-
 func (pc *ProductController) CreateProduct(ctx *gin.Context) {
-	var body CreateProductInput
+	var body dto.BodyProduct
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		mapError(ctx, err)
 		return

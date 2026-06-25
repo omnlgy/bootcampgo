@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"example.com/internal/dto"
 	"example.com/internal/models"
 	"example.com/internal/service"
 	"github.com/gin-gonic/gin"
@@ -10,16 +11,6 @@ type OrderController struct {
 	orderService *service.OrderService
 }
 
-type OrderItemInput struct {
-	ProductID uint `json:"product_id" binding:"required"`
-	Quantity  int  `json:"quantity" binding:"required,gt=0"`
-}
-
-type CheckoutInput struct {
-	UserID uint             `json:"user_id" binding:"required"`
-	Items  []OrderItemInput `json:"items" binding:"required,dive"`
-}
-
 func NewOrderController(orderService *service.OrderService) *OrderController {
 	return &OrderController{
 		orderService: orderService,
@@ -27,7 +18,7 @@ func NewOrderController(orderService *service.OrderService) *OrderController {
 }
 
 func (oc *OrderController) CreateOrder(ctx *gin.Context) {
-	var body CheckoutInput
+	var body dto.BodyCreateOrder
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		mapError(ctx, err)
 		return
