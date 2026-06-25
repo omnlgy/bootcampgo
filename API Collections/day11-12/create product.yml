@@ -1,0 +1,25 @@
+info:
+  name: create product
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:8080/api/products
+  body:
+    type: json
+    data: |-
+      {
+        "sku": "PRO-01111",
+        "name": "Gaming Mouse Pad tes",
+        "price": 19.99,
+        "stock": 100,
+        "expired_at": "2026-07-01"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

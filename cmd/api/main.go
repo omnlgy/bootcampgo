@@ -8,7 +8,10 @@ import (
 	"example.com/internal/repository"
 	"example.com/internal/router"
 	"example.com/internal/service"
+	"example.com/internal/validator"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	goplayvalidator "github.com/go-playground/validator/v10"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -23,16 +26,29 @@ func main() {
 	seed.Init(db)
 	transactor := repository.NewTransactor(db)
 
+	// Register custom validators
+	if v, ok := binding.Validator.Engine().(*goplayvalidator.Validate); ok {
+		if err := validator.RegisterCustomValidators(v); err != nil {
+			log.Fatalf("failed to register custom validators: %v", err)
+		}
+	}
+
+	// Repositories
 	orderRepo := repository.NewOrderRepository(db)
 	productRepo := repository.NewProductRepository(db)
 	userRepo := repository.NewUserRepository(db)
 	orderItemRepo := repository.NewOrderItemRepository(db)
 
+	// Services
 	orderSvc := service.NewOrderService(orderRepo, productRepo, userRepo, orderItemRepo, transactor)
+	productSvc := service.NewProductService(productRepo)
+
+	// Controllers
 	orderCtrl := controller.NewOrderController(orderSvc)
+	productCtrl := controller.NewProductController(productSvc)
 
 	server := gin.Default()
 
-	router.OrderRoutes(server, orderCtrl)
+	router.RegisterRoutes(server, orderCtrl, productCtrl)
 	server.Run(":8080")
 }

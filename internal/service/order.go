@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
@@ -83,7 +82,7 @@ func (s *OrderService) CreateOrder(order models.Order) error {
 			Status:      "COMPLETED",
 			Items:       orderItems,
 		}
-		return errors.New("tes error")
+		// return errors.New("tes error")
 		// Create order first — GORM backfills the ID and inserts items via the association
 		if err := orderRepo.Create(newOrder); err != nil {
 			return err

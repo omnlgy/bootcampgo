@@ -5,10 +5,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func OrderRoutes(server *gin.Engine, controller *controller.OrderController) {
+func RegisterRoutes(server *gin.Engine, orderCtrl *controller.OrderController, productCtrl *controller.ProductController) {
 	api := server.Group("/api")
 
-	api.GET("/orders", controller.GetOrders)
-	api.POST("/orders", controller.CreateOrder)
+	api.GET("/orders", orderCtrl.GetOrders)
+	api.POST("/orders", orderCtrl.CreateOrder)
 
+	api.POST("/products", productCtrl.CreateProduct)
 }

@@ -8,6 +8,7 @@ type Product struct {
 	Name      string    `gorm:"type:varchar(100);not null" json:"name"`
 	Price     float64   `gorm:"type:numeric(12,2);not null" json:"price"`
 	Stock     int       `gorm:"type:int;not null;default:0" json:"stock"`
+	ExpiredAt *time.Time `gorm:"type:date" json:"expired_at"`
 	CreatedAt time.Time `json:"created_at"`
 }
 

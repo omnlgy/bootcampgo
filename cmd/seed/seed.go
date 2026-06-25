@@ -16,6 +16,7 @@ func Init(db *gorm.DB) {
 
 	now := time.Date(2026, 6, 23, 13, 4, 35, 583488000, time.UTC)
 	now2 := time.Date(2026, 6, 23, 13, 5, 14, 778886000, time.UTC)
+	expiry := time.Date(2026, 7, 10, 0, 0, 0, 0, time.UTC) // >5 and <30 days from now
 
 	// Users — unique on email
 	for _, u := range []models.User{
@@ -32,14 +33,14 @@ func Init(db *gorm.DB) {
 
 	// Products — unique on sku
 	for _, p := range []models.Product{
-		{SKU: "PRO-001", Name: "Wireless Mouse", Price: 29.99, Stock: 50, CreatedAt: now},
-		{SKU: "PRO-002", Name: "USB-C Hub", Price: 45.00, Stock: 30, CreatedAt: now},
-		{SKU: "PRO-003", Name: "Webcam HD", Price: 89.99, Stock: 20, CreatedAt: now},
-		{SKU: "PRO-004", Name: "Desk Lamp", Price: 39.99, Stock: 25, CreatedAt: now},
-		{SKU: "PRO-005", Name: "Mechanical Keyboard", Price: 129.99, Stock: 15, CreatedAt: now2},
-		{SKU: "PRO-006", Name: `Monitor 27"`, Price: 349.99, Stock: 10, CreatedAt: now2},
-		{SKU: "PRO-007", Name: "Headset", Price: 79.99, Stock: 20, CreatedAt: now2},
-		{SKU: "PRO-008", Name: "Laptop Stand", Price: 34.99, Stock: 40, CreatedAt: now2},
+		{SKU: "PRO-001", Name: "Wireless Mouse", Price: 29.99, Stock: 50, ExpiredAt: &expiry, CreatedAt: now},
+		{SKU: "PRO-002", Name: "USB-C Hub", Price: 45.00, Stock: 30, ExpiredAt: &expiry, CreatedAt: now},
+		{SKU: "PRO-003", Name: "Webcam HD", Price: 89.99, Stock: 20, ExpiredAt: &expiry, CreatedAt: now},
+		{SKU: "PRO-004", Name: "Desk Lamp", Price: 39.99, Stock: 25, ExpiredAt: &expiry, CreatedAt: now},
+		{SKU: "PRO-005", Name: "Mechanical Keyboard", Price: 129.99, Stock: 15, ExpiredAt: &expiry, CreatedAt: now2},
+		{SKU: "PRO-006", Name: `Monitor 27"`, Price: 349.99, Stock: 10, ExpiredAt: &expiry, CreatedAt: now2},
+		{SKU: "PRO-007", Name: "Headset", Price: 79.99, Stock: 20, ExpiredAt: &expiry, CreatedAt: now2},
+		{SKU: "PRO-008", Name: "Laptop Stand", Price: 34.99, Stock: 40, ExpiredAt: &expiry, CreatedAt: now2},
 	} {
 		db.FirstOrCreate(&p, models.Product{SKU: p.SKU})
 	}
