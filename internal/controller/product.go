@@ -23,19 +23,19 @@ type CreateProductInput struct {
 	Name      string  `json:"name" binding:"required"`
 	Price     float64 `json:"price" binding:"required,gt=0"`
 	Stock     int     `json:"stock" binding:"gte=0"`
-	ExpiredAt string `json:"expired_at" binding:"required,expire_range"`
+	ExpiredAt string  `json:"expired_at" binding:"required,expire_range"`
 }
 
 func (pc *ProductController) CreateProduct(ctx *gin.Context) {
 	var body CreateProductInput
 	if err := ctx.ShouldBindJSON(&body); err != nil {
-		ctx.JSON(400, gin.H{"error": err.Error()})
+		mapError(ctx, err)
 		return
 	}
 
 	expiredAt, err := time.Parse("2006-01-02", body.ExpiredAt)
 	if err != nil {
-		ctx.JSON(400, gin.H{"error": "expired_at must be a valid date in YYYY-MM-DD format"})
+		mapError(ctx, err)
 		return
 	}
 
@@ -48,7 +48,7 @@ func (pc *ProductController) CreateProduct(ctx *gin.Context) {
 	}
 
 	if err := pc.productService.CreateProduct(product); err != nil {
-		ctx.JSON(500, gin.H{"error": err.Error()})
+		mapError(ctx, err)
 		return
 	}
 

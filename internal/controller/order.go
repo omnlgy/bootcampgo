@@ -29,7 +29,7 @@ func NewOrderController(orderService *service.OrderService) *OrderController {
 func (oc *OrderController) CreateOrder(ctx *gin.Context) {
 	var body CheckoutInput
 	if err := ctx.ShouldBindJSON(&body); err != nil {
-		ctx.JSON(400, gin.H{"error": err.Error()})
+		mapError(ctx, err)
 		return
 	}
 
@@ -44,7 +44,7 @@ func (oc *OrderController) CreateOrder(ctx *gin.Context) {
 		UserID: body.UserID,
 		Items:  orderItems,
 	}); err != nil {
-		ctx.JSON(500, gin.H{"error": err.Error()})
+		mapError(ctx, err)
 		return
 	}
 
@@ -54,7 +54,7 @@ func (oc *OrderController) CreateOrder(ctx *gin.Context) {
 func (oc *OrderController) GetOrders(ctx *gin.Context) {
 	orders, err := oc.orderService.GetAllOrders()
 	if err != nil {
-		ctx.JSON(500, gin.H{"error": err.Error()})
+		mapError(ctx, err)
 		return
 	}
 	ctx.JSON(200, orders)

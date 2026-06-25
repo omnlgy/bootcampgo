@@ -39,7 +39,10 @@ func (s *OrderService) CreateOrder(order models.Order) error {
 		// orderItemRepo := s.orderItemRepo.WithTx(tx)
 
 		if _, err := userRepo.GetByID(order.UserID); err != nil {
-			return err
+			return &NotFoundError{
+				Resource: "user",
+				ID:       fmt.Sprintf("%d", order.UserID),
+			}
 		}
 
 		var totalAmount float64
@@ -56,7 +59,11 @@ func (s *OrderService) CreateOrder(order models.Order) error {
 			}
 
 			if product.Stock < item.Quantity {
-				return fmt.Errorf("insufficient stock for product %d", item.ProductID)
+				return ValidationError{
+					Field:   "quantity",
+					Rule:    "quantity_must_be_less_than_stock",
+					Message: fmt.Sprintf("insufficient stock for product %d", item.ProductID),
+				}
 			}
 
 			newStock := product.Stock - item.Quantity
