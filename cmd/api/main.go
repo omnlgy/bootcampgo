@@ -42,13 +42,16 @@ func main() {
 	// Services
 	orderSvc := service.NewOrderService(orderRepo, productRepo, userRepo, orderItemRepo, transactor)
 	productSvc := service.NewProductService(productRepo)
+	authSvc := service.NewAuthService(userRepo)
 
 	// Controllers
 	orderCtrl := controller.NewOrderController(orderSvc)
 	productCtrl := controller.NewProductController(productSvc)
+	authCtrl := controller.NewAuthController(authSvc)
 
 	server := gin.Default()
 
 	router.RegisterRoutes(server, orderCtrl, productCtrl)
+	router.RegisterAuthRoutes(server, authCtrl)
 	server.Run(":8080")
 }

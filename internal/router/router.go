@@ -13,3 +13,10 @@ func RegisterRoutes(server *gin.Engine, orderCtrl *controller.OrderController, p
 
 	api.POST("/products", productCtrl.CreateProduct)
 }
+
+func RegisterAuthRoutes(server *gin.Engine, authCtrl *controller.AuthController) {
+	api := server.Group("/api")
+
+	api.POST("/login", authCtrl.LoginHandler)
+	api.POST("/register", authCtrl.RegisterHandler)
+}

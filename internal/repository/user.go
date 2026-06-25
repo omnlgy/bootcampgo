@@ -36,6 +36,11 @@ func (r *UserRepository) GetByID(id uint) (models.User, error) {
 	return user, r.db.First(&user, id).Error
 }
 
+func (r *UserRepository) GetByEmail(email string) (models.User, error) {
+	var user models.User
+	return user, r.db.Where("email = ?", email).First(&user).Error
+}
+
 func (r *UserRepository) Update(user domain.User) (models.User, error) {
 	return models.User{}, r.db.Save(user).Error
 }

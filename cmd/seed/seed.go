@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"example.com/internal/models"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -19,13 +20,17 @@ func Init(db *gorm.DB) {
 	expiry := time.Date(2026, 7, 10, 0, 0, 0, 0, time.UTC) // >5 and <30 days from now
 
 	// Users — unique on email
+	hash := func(pw string) string {
+		b, _ := bcrypt.GenerateFromPassword([]byte(pw), bcrypt.DefaultCost)
+		return string(b)
+	}
 	for _, u := range []models.User{
-		{Email: "alice@example.com", CreatedAt: now},
-		{Email: "bob@example.com", CreatedAt: now},
-		{Email: "carol@example.com", CreatedAt: now},
-		{Email: "dave@example.com", CreatedAt: now2},
-		{Email: "eve@example.com", CreatedAt: now2},
-		{Email: "frank@example.com", CreatedAt: now2},
+		{Email: "alice@example.com", Password: hash("password"), CreatedAt: now},
+		{Email: "bob@example.com", Password: hash("password"), CreatedAt: now},
+		{Email: "carol@example.com", Password: hash("password"), CreatedAt: now},
+		{Email: "dave@example.com", Password: hash("password"), CreatedAt: now2},
+		{Email: "eve@example.com", Password: hash("password"), CreatedAt: now2},
+		{Email: "frank@example.com", Password: hash("password"), CreatedAt: now2},
 	} {
 		db.FirstOrCreate(&u, models.User{Email: u.Email})
 	}
