@@ -37,3 +37,19 @@ type ValidationErrors []ValidationError
 func (ve ValidationErrors) Error() string {
 	return "validation failed"
 }
+
+type UnauthorizedError struct {
+	Message string
+}
+
+func (e UnauthorizedError) Error() string {
+	return e.Message
+}
+
+type ForbiddenError struct {
+	Message string
+}
+
+func (e ForbiddenError) Error() string {
+	return e.Message
+}

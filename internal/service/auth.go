@@ -10,12 +10,14 @@ import (
 )
 
 type AuthService struct {
-	userRepo domain.UserRepository
+	userRepo      domain.UserRepository
+	blacklistRepo domain.BlacklistedTokenRepository
 }
 
-func NewAuthService(userRepo domain.UserRepository) *AuthService {
+func NewAuthService(userRepo domain.UserRepository, blacklistRepo domain.BlacklistedTokenRepository) *AuthService {
 	return &AuthService{
-		userRepo: userRepo,
+		userRepo:      userRepo,
+		blacklistRepo: blacklistRepo,
 	}
 }
 
@@ -64,7 +66,7 @@ func (s *AuthService) Register(email, password string) (string, error) {
 		Password: hashed,
 	}
 
-	if err := s.userRepo.Create(user); err != nil {
+	if err := s.userRepo.Create(&user); err != nil {
 		return "", err
 	}
 
@@ -74,6 +76,23 @@ func (s *AuthService) Register(email, password string) (string, error) {
 	}
 
 	return token, nil
+}
+
+func (s *AuthService) Logout(tokenString string) error {
+	claims, err := ValidateToken(tokenString)
+	if err != nil {
+		return err
+	}
+
+	bl := models.BlacklistedToken{
+		Token:     tokenString,
+		ExpiresAt: claims.ExpiresAt.Time,
+	}
+	return s.blacklistRepo.Create(bl)
+}
+
+func (s *AuthService) IsTokenBlacklisted(tokenString string) (bool, error) {
+	return s.blacklistRepo.Exists(tokenString)
 }
 
 type JWTClaims struct {

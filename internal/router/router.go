@@ -19,4 +19,5 @@ func RegisterAuthRoutes(server *gin.Engine, authCtrl *controller.AuthController)
 
 	api.POST("/login", authCtrl.LoginHandler)
 	api.POST("/register", authCtrl.RegisterHandler)
+	api.POST("/logout", authCtrl.LogoutHandler)
 }

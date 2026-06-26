@@ -38,11 +38,12 @@ func main() {
 	productRepo := repository.NewProductRepository(db)
 	userRepo := repository.NewUserRepository(db)
 	orderItemRepo := repository.NewOrderItemRepository(db)
+	blacklistRepo := repository.NewBlacklistedTokenRepository(db)
 
 	// Services
 	orderSvc := service.NewOrderService(orderRepo, productRepo, userRepo, orderItemRepo, transactor)
 	productSvc := service.NewProductService(productRepo)
-	authSvc := service.NewAuthService(userRepo)
+	authSvc := service.NewAuthService(userRepo, blacklistRepo)
 
 	// Controllers
 	orderCtrl := controller.NewOrderController(orderSvc)

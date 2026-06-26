@@ -19,11 +19,21 @@ func mapError(ctx *gin.Context, err error) {
 			"code":    http.StatusConflict,
 			"message": e.Error(),
 		})
-	case *service.ValidationError:
+	case *service.ValidationError, service.ValidationError:
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"code":    http.StatusBadRequest,
-			"message": "reques validation failed",
+			"message": "request validation failed",
 			"details": e,
+		})
+	case *service.UnauthorizedError, service.UnauthorizedError:
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"code":    http.StatusUnauthorized,
+			"message": e.Error(),
+		})
+	case *service.ForbiddenError, service.ForbiddenError:
+		ctx.JSON(http.StatusForbidden, gin.H{
+			"code":    http.StatusForbidden,
+			"message": e.Error(),
 		})
 	default:
 		ctx.JSON(http.StatusInternalServerError, gin.H{
